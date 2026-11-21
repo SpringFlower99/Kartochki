@@ -1,4 +1,4 @@
-/* Карточки решений. Только дизайн, без данных. v1.3 · 21.11.2026 (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
+/* Карточки решений. Только дизайн, без данных. v1.4 · 21.11.2026 (nowStyle: yellow | outline | fill) (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
    По умолчанию всегда светлая. mode:'dark' — тёмная, mode:'auto' — по экрану. */
 (function () {
   var CSS = '.k-pl{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:1;padding:4px 8px;border-radius:2px;letter-spacing:.03em}.k-bt{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;padding:8px 14px;border-radius:3px;height:auto;cursor:pointer}.k-em{width:24px;flex:none;font-size:18px;line-height:22px;text-align:center}.k-lb{font-size:17px;font-weight:500;line-height:22px}.k-ds{font-size:14px;line-height:18px;margin-top:2px}.k-card{max-width:420px;box-sizing:border-box;margin:.5rem 0}@media (min-width:520px){.k-card{zoom:.84;max-width:504px}}.k-sv{font-size:12px;padding:5px 8px;border-radius:2px;height:auto;cursor:pointer}';
@@ -50,7 +50,10 @@
     var g = TAGS[C.tag] || TAGS.routine;
     var level = C.level || '⚠️ РЕШАЕШЬ ТЫ';
     var levelBg = level.indexOf('❓') === 0 ? (t.title === '#FFFFFF' ? '#444441' : '#5F5E5A') : t.warn;
-    var nowBar = C.now ? '<button class="k-bt k-now" style="background:#FAC775;border:2px solid #111111"><span class="k-em">⚡</span><span style="flex:1;min-width:0"><span class="k-lb" style="display:block;color:#412402">СЕЙЧАС</span><span class="k-ds" style="display:block;color:#633806">' + (C.nowDesc || 'Жмёшь — и Клод ведёт по шагам, пока не скажешь «готово»') + '</span></span></button>' : '';
+    var ns = C.nowStyle || 'yellow';
+    var nowCss = ns === 'fill' ? ['#E24B4A', '2px solid #111111', '#FFFFFF', '#FCEBEB'] : ns === 'outline' ? [t.bBg, '2px solid #E24B4A', '#A32D2D', '#791F1F'] : ['#FAC775', '2px solid #111111', '#412402', '#633806'];
+    var nowBar = C.now ? '<button class="k-bt k-now" style="background:' + nowCss[0] + ';border:' + nowCss[1] + '"><span class="k-em">⚡</span><span style="flex:1;min-width:0"><span class="k-lb" style="display:block;color:' + nowCss[2] + '">СЕЙЧАС</span><span class="k-ds" style="display:block;color:' + nowCss[3] + '">' + (C.nowDesc || 'Жмёшь — и Клод ведёт по шагам, пока не скажешь «готово»') + '</span></span></button>' : '';
+    var levelCss = (C.now && ns === 'fill' && levelBg === t.warn) ? 'background:transparent;border:1px solid ' + t.warn + ';color:' + t.warn + ';padding:3px 7px' : 'background:' + levelBg + ';color:#FFF';
     var stamp = '<span class="k-pl" style="background:transparent;border:1px solid #0B9C9C;color:#0B9C9C;padding:3px 7px;margin-top:6px">♟ ХАДИЖАТ БЫ ВЫЖИДАЛА</span>';
 
     function opt(o, i) {
@@ -72,7 +75,7 @@
 
     root.innerHTML =
       '<div class="k-card" style="background:' + t.card + ';border:' + t.bd + ';border-radius:4px;padding:12px 16px">' +
-      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="k-pl" style="background:' + levelBg + ';color:#FFF">' + level + '</span><span class="k-pl" style="background:linear-gradient(90deg,' + g[2] + ',' + g[3] + ');color:' + g[4] + '">' + g[0] + ' ' + g[1] + '</span></div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="k-pl" style="' + levelCss + '">' + level + '</span><span class="k-pl" style="background:linear-gradient(90deg,' + g[2] + ',' + g[3] + ');color:' + g[4] + '">' + g[0] + ' ' + g[1] + '</span></div>' +
       '<div style="font-size:22px;font-weight:500;line-height:1.15;color:' + t.title + ';text-wrap:balance;margin-bottom:10px">' + C.title + '</div>' +
       '<div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-bottom:12px">' + deadline + ifnot + '</div>' +
       '<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">' + nowBar + (C.options || []).map(opt).join('') + '</div>' +
