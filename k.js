@@ -1,4 +1,5 @@
-/* Карточки решений. Только дизайн, без данных. v1 · 21.11.2026 */
+/* Карточки решений. Только дизайн, без данных. v1.1 · 21.11.2026
+   По умолчанию всегда светлая. mode:'dark' — тёмная, mode:'auto' — по экрану. */
 (function () {
   var CSS = '.k-pl{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:1;padding:4px 8px;border-radius:2px;letter-spacing:.03em}.k-bt{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;padding:8px 14px;border-radius:3px;height:auto;cursor:pointer}.k-em{width:24px;flex:none;font-size:18px;line-height:22px;text-align:center}.k-lb{font-size:17px;font-weight:500;line-height:22px}.k-ds{font-size:14px;line-height:18px;margin-top:2px}.k-card{max-width:420px;box-sizing:border-box;margin:.5rem 0}@media (min-width:520px){.k-card{zoom:.84;max-width:504px}}.k-sv{font-size:12px;padding:5px 8px;border-radius:2px;height:auto;cursor:pointer}';
 
@@ -45,7 +46,7 @@
       document.head.appendChild(s);
     }
     var root = document.getElementById(rootId || 'k-root');
-    var t = theme(isDark());
+    var t = theme(C.mode === 'dark' || (C.mode === 'auto' && isDark()));
     var g = TAGS[C.tag] || TAGS.routine;
     var level = C.level || '⚠️ РЕШАЕШЬ ТЫ';
     var stamp = '<span class="k-pl" style="background:transparent;border:1px solid #0B9C9C;color:#0B9C9C;padding:3px 7px;margin-top:6px">♟ ХАДИЖАТ БЫ ВЫЖИДАЛА</span>';
