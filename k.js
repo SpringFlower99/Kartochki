@@ -1,4 +1,4 @@
-/* Карточки решений. Только дизайн, без данных. v2.0 · 21.11.2026 (ссылка под «📁 ТУТ», «Если нет» 12px, кнопки одной высоты) (K.digest — сводка: main + next + wait + done; срочность — эмодзи по краям заголовка: level '🚨' | '🔥' | '❓'; плашки срочности нет) (лампочка жёлтая, у самого значка 💡 чёрная обводка) (nowStyle по умолчанию fill; служебный ряд за лампочкой 💡) (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
+/* Карточки решений. Только дизайн, без данных. v2.1 · 21.11.2026 (nag:true — «напоминай 3 раза в день»; lamp:false; «открыть» в сводке разворачивает карточку на месте) (ссылка под «📁 ТУТ», «Если нет» 12px, кнопки одной высоты) (K.digest — сводка: main + next + wait + done; срочность — эмодзи по краям заголовка: level '🚨' | '🔥' | '❓'; плашки срочности нет) (лампочка жёлтая, у самого значка 💡 чёрная обводка) (nowStyle по умолчанию fill; служебный ряд за лампочкой 💡) (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
    По умолчанию всегда светлая. mode:'dark' — тёмная, mode:'auto' — по экрану. */
 (function () {
   var CSS = '.k-pl{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:1;padding:4px 8px;border-radius:2px;letter-spacing:.03em}.k-bt{display:flex;gap:8px;align-items:center;width:100%;min-height:56px;box-sizing:border-box;text-align:left;padding:8px 14px;border-radius:3px;height:auto;cursor:pointer}.k-em{width:24px;flex:none;font-size:18px;line-height:22px;text-align:center}.k-lb{font-size:17px;font-weight:500;line-height:22px}.k-ds{font-size:14px;line-height:18px;margin-top:2px}.k-card{max-width:420px;box-sizing:border-box;margin:.5rem 0}@media (min-width:520px){.k-card{zoom:.84;max-width:504px}}.k-sv{font-size:12px;line-height:1;height:30px;min-width:32px;box-sizing:border-box;padding:0 8px;border-radius:2px;cursor:pointer;flex:none}';
@@ -65,6 +65,9 @@
       return '<button class="k-bt" data-i="' + i + '" style="background:' + t.bBg + ';border:' + t.bBd + '"><span class="k-em">' + o.em + '</span><span style="flex:1;min-width:0"><span class="k-lb" style="display:block;color:' + t.bTx + '">' + o.label + '</span><span class="k-ds" style="display:block;color:' + t.bDs + '">' + o.desc + '</span>' + (o.hot && C.tag === 'div' ? stamp : '') + '</span></button>';
     }
 
+    var opts = (C.options || []).slice();
+    if (C.nag) opts.push({ em: '🔁', label: 'Напоминай, пока не сделаю', desc: '3 раза в день на планёрке', send: 'Напоминай 3 раза в день, пока не сделаю: ' + C.title });
+    C.options = opts;
     var deadline = C.deadline ? '<span class="k-pl" style="background:#FAC775;color:#412402">⏰ СРОК: ' + C.deadline + '</span>' : '';
     var ifnot = C.ifnot ? '<span class="k-pl" style="background:' + t.warn + ';color:#FFF;line-height:1.25">Если нет: ' + C.ifnot + '</span>' : '';
     var goal = C.goal ? '<div style="background:' + t.goalBg + ';border-left:3px solid #0B9C9C;border-radius:0;padding:8px 10px;margin-bottom:10px"><div style="font-size:12px;font-weight:500;letter-spacing:.03em;color:#0B9C9C">🎯 ЧЕГО ДОБИВАЕТСЯ ЭТОТ ЧЕЛОВЕК?</div><div style="font-size:14px;line-height:18px;color:' + t.bTx + ';margin-top:2px">' + C.goal + '</div></div>' : '';
@@ -81,8 +84,8 @@
       '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="k-pl" style="background:linear-gradient(90deg,' + g[2] + ',' + g[3] + ');color:' + g[4] + '">' + g[0] + ' ' + g[1] + '</span></div>' +
       '<div style="font-size:22px;font-weight:500;line-height:1.15;color:' + t.title + ';text-wrap:balance;margin-bottom:10px">' + title + '</div>' +
       '<div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-bottom:12px">' + deadline + ifnot + '</div>' +
-      '<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">' + nowBar + (C.options || []).map(opt).join('') + '</div>' +
-      '<div style="display:flex;gap:6px;margin-bottom:4px"><input class="k-cm" placeholder="✍️ Ничего не подходит — напишу сама" style="flex:1;min-width:0;font-size:14px"><button class="k-cs k-sv" style="background:transparent;border:' + t.svBd + ';color:' + t.sv + '">→</button><button class="k-lamp k-sv" aria-label="Показать служебные кнопки" style="background:#FAC775;border:1px solid #111111;color:#412402"><span class="k-bulb" style="display:inline-block;filter:drop-shadow(0.7px 0 0 #111) drop-shadow(-0.7px 0 0 #111) drop-shadow(0 0.7px 0 #111) drop-shadow(0 -0.7px 0 #111)">💡</span></button>' + whereBtn + '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">' + nowBar + opts.map(opt).join('') + '</div>' +
+      '<div style="display:flex;gap:6px;margin-bottom:4px"><input class="k-cm" placeholder="✍️ Ничего не подходит — напишу сама" style="flex:1;min-width:0;font-size:14px"><button class="k-cs k-sv" style="background:transparent;border:' + t.svBd + ';color:' + t.sv + '">→</button>' + (C.lamp === false ? '' : '<button class="k-lamp k-sv" aria-label="Показать служебные кнопки" style="background:#FAC775;border:1px solid #111111;color:#412402"><span class="k-bulb" style="display:inline-block;filter:drop-shadow(0.7px 0 0 #111) drop-shadow(-0.7px 0 0 #111) drop-shadow(0 0.7px 0 #111) drop-shadow(0 -0.7px 0 #111)">💡</span></button>') + whereBtn + '</div>' +
       wherePath +
       '<div class="k-er" style="font-size:13px;color:var(--text-danger);min-height:4px;margin-bottom:6px"></div>' +
       '<div class="k-svc" style="display:none;flex-wrap:wrap;gap:6px;margin-bottom:10px">' + svc + '</div>' +
@@ -95,7 +98,7 @@
       b.addEventListener('click', function () { send(SVC[+b.dataset.s][1] + ' — ' + C.title); });
     });
     var lamp = root.querySelector('.k-lamp'), row = root.querySelector('.k-svc');
-    lamp.addEventListener('click', function () {
+    if (lamp) lamp.addEventListener('click', function () {
       var open = row.style.display === 'flex';
       row.style.display = open ? 'none' : 'flex';
       lamp.querySelector('.k-bulb').textContent = open ? '💡' : '✕';
@@ -122,7 +125,7 @@
       var fl = r.level ? r.level.trim().split(' ')[0] + ' ' : '';
       return '<button class="k-row" data-r="' + i + '" style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;text-align:left;background:' + t.bBg + ';border:' + t.bBd + ';border-radius:3px;padding:8px 12px;height:auto;cursor:pointer">' +
         '<span style="display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%"><span style="font-size:17px;font-weight:500;line-height:22px;color:' + t.bTx + '">' + fl + r.title + '</span><span style="font-size:13px;color:' + t.bDs + ';flex:none">открыть ▸</span></span>' +
-        '<span style="display:flex;gap:6px;flex-wrap:wrap">' + tag(r.tag) + (r.deadline ? '<span class="k-pl" style="background:#FAC775;color:#412402">⏰ ' + r.deadline + '</span>' : '') + '</span></button>';
+        '<span style="display:flex;gap:6px;flex-wrap:wrap">' + tag(r.tag) + (r.deadline ? '<span class="k-pl" style="background:#FAC775;color:#412402">⏰ ' + r.deadline + '</span>' : '') + '</span></button><div id="' + (rootId || 'k-root') + '-n' + i + '"></div>';
     }
     function wrow(w) {
       return '<div style="display:flex;flex-direction:column;gap:4px;padding:6px 0;border-top:0.5px solid ' + t.bDs + '"><span style="font-size:14px;line-height:18px;color:' + t.bTx + '">' + w.title + '</span><span style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">' + tag(w.tag) + '<span style="font-size:12px;color:' + t.bDs + '">мяч: ' + w.who + (w.until ? ' · до ' + w.until : '') + '</span></span></div>';
@@ -137,7 +140,13 @@
       '</div>';
     if (D.main) window.K(D.main, (rootId || 'k-root') + '-main');
     root.querySelectorAll('.k-row').forEach(function (b) {
-      b.addEventListener('click', function () { send('Открой карточку: ' + next[+b.dataset.r].title); });
+      b.addEventListener('click', function () {
+        var r = next[+b.dataset.r], box = document.getElementById((rootId || 'k-root') + '-n' + b.dataset.r);
+        if (!r.options) { send('Открой карточку: ' + r.title); return; }
+        if (box.innerHTML) { box.innerHTML = ''; b.style.display = 'flex'; return; }
+        b.style.display = 'none';
+        window.K(Object.assign({}, r, { title: r.title.toUpperCase() }), box.id);
+      });
     });
     var wt = root.querySelector('.k-wt'), wl = root.querySelector('.k-wl');
     if (wt) wt.addEventListener('click', function () {
