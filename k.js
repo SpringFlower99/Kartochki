@@ -1,4 +1,4 @@
-/* Карточки решений. Только дизайн, без данных. v1.4 · 21.11.2026 (nowStyle: yellow | outline | fill) (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
+/* Карточки решений. Только дизайн, без данных. v1.5 · 21.11.2026 (nowStyle по умолчанию fill; служебный ряд за лампочкой 💡) (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
    По умолчанию всегда светлая. mode:'dark' — тёмная, mode:'auto' — по экрану. */
 (function () {
   var CSS = '.k-pl{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:1;padding:4px 8px;border-radius:2px;letter-spacing:.03em}.k-bt{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;padding:8px 14px;border-radius:3px;height:auto;cursor:pointer}.k-em{width:24px;flex:none;font-size:18px;line-height:22px;text-align:center}.k-lb{font-size:17px;font-weight:500;line-height:22px}.k-ds{font-size:14px;line-height:18px;margin-top:2px}.k-card{max-width:420px;box-sizing:border-box;margin:.5rem 0}@media (min-width:520px){.k-card{zoom:.84;max-width:504px}}.k-sv{font-size:12px;padding:5px 8px;border-radius:2px;height:auto;cursor:pointer}';
@@ -50,7 +50,7 @@
     var g = TAGS[C.tag] || TAGS.routine;
     var level = C.level || '⚠️ РЕШАЕШЬ ТЫ';
     var levelBg = level.indexOf('❓') === 0 ? (t.title === '#FFFFFF' ? '#444441' : '#5F5E5A') : t.warn;
-    var ns = C.nowStyle || 'yellow';
+    var ns = C.nowStyle || 'fill';
     var nowCss = ns === 'fill' ? ['#E24B4A', '2px solid #111111', '#FFFFFF', '#FCEBEB'] : ns === 'outline' ? [t.bBg, '2px solid #E24B4A', '#A32D2D', '#791F1F'] : ['#FAC775', '2px solid #111111', '#412402', '#633806'];
     var nowBar = C.now ? '<button class="k-bt k-now" style="background:' + nowCss[0] + ';border:' + nowCss[1] + '"><span class="k-em">⚡</span><span style="flex:1;min-width:0"><span class="k-lb" style="display:block;color:' + nowCss[2] + '">СЕЙЧАС</span><span class="k-ds" style="display:block;color:' + nowCss[3] + '">' + (C.nowDesc || 'Жмёшь — и Клод ведёт по шагам, пока не скажешь «готово»') + '</span></span></button>' : '';
     var levelCss = (C.now && ns === 'fill' && levelBg === t.warn) ? 'background:transparent;border:1px solid ' + t.warn + ';color:' + t.warn + ';padding:3px 7px' : 'background:' + levelBg + ';color:#FFF';
@@ -79,9 +79,9 @@
       '<div style="font-size:22px;font-weight:500;line-height:1.15;color:' + t.title + ';text-wrap:balance;margin-bottom:10px">' + C.title + '</div>' +
       '<div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-bottom:12px">' + deadline + ifnot + '</div>' +
       '<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">' + nowBar + (C.options || []).map(opt).join('') + '</div>' +
-      '<div style="display:flex;gap:6px;margin-bottom:4px"><input class="k-cm" placeholder="✍️ Ничего не подходит — напишу сама" style="flex:1;min-width:0;font-size:14px"><button class="k-cs k-sv" style="background:transparent;border:' + t.svBd + ';color:' + t.sv + '">→</button></div>' +
+      '<div style="display:flex;gap:6px;margin-bottom:4px"><input class="k-cm" placeholder="✍️ Ничего не подходит — напишу сама" style="flex:1;min-width:0;font-size:14px"><button class="k-cs k-sv" style="background:transparent;border:' + t.svBd + ';color:' + t.sv + '">→</button><button class="k-lamp k-sv" aria-label="Показать служебные кнопки" style="background:transparent;border:' + t.svBd + ';color:' + t.sv + '">💡</button></div>' +
       '<div class="k-er" style="font-size:13px;color:var(--text-danger);min-height:4px;margin-bottom:6px"></div>' +
-      '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">' + svc + '</div>' +
+      '<div class="k-svc" style="display:none;flex-wrap:wrap;gap:6px;margin-bottom:10px">' + svc + '</div>' +
       goal + where + '</div>';
 
     root.querySelectorAll('.k-bt:not(.k-now)').forEach(function (b) {
@@ -89,6 +89,12 @@
     });
     root.querySelectorAll('.k-sv[data-s]').forEach(function (b) {
       b.addEventListener('click', function () { send(SVC[+b.dataset.s][1] + ' — ' + C.title); });
+    });
+    var lamp = root.querySelector('.k-lamp'), row = root.querySelector('.k-svc');
+    lamp.addEventListener('click', function () {
+      var open = row.style.display === 'flex';
+      row.style.display = open ? 'none' : 'flex';
+      lamp.textContent = open ? '💡' : '✕';
     });
     var nb = root.querySelector('.k-now');
     if (nb) nb.addEventListener('click', function () { send('⚡ Делаю сейчас: ' + C.title); });
