@@ -1,4 +1,4 @@
-/* Карточки решений. Только дизайн, без данных. v2.1 · 21.11.2026 (nag:true — «напоминай 3 раза в день»; lamp:false; «открыть» в сводке разворачивает карточку на месте) (ссылка под «📁 ТУТ», «Если нет» 12px, кнопки одной высоты) (K.digest — сводка: main + next + wait + done; срочность — эмодзи по краям заголовка: level '🚨' | '🔥' | '❓'; плашки срочности нет) (лампочка жёлтая, у самого значка 💡 чёрная обводка) (nowStyle по умолчанию fill; служебный ряд за лампочкой 💡) (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
+/* Карточки решений. Только дизайн, без данных. v2.2 · 21.11.2026 (развёрнутая карточка сводки: «▴ свернуть», после ответа сворачивается с ✓) (nag:true — «напоминай 3 раза в день»; lamp:false; «открыть» в сводке разворачивает карточку на месте) (ссылка под «📁 ТУТ», «Если нет» 12px, кнопки одной высоты) (K.digest — сводка: main + next + wait + done; срочность — эмодзи по краям заголовка: level '🚨' | '🔥' | '❓'; плашки срочности нет) (лампочка жёлтая, у самого значка 💡 чёрная обводка) (nowStyle по умолчанию fill; служебный ряд за лампочкой 💡) (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
    По умолчанию всегда светлая. mode:'dark' — тёмная, mode:'auto' — по экрану. */
 (function () {
   var CSS = '.k-pl{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:1;padding:4px 8px;border-radius:2px;letter-spacing:.03em}.k-bt{display:flex;gap:8px;align-items:center;width:100%;min-height:56px;box-sizing:border-box;text-align:left;padding:8px 14px;border-radius:3px;height:auto;cursor:pointer}.k-em{width:24px;flex:none;font-size:18px;line-height:22px;text-align:center}.k-lb{font-size:17px;font-weight:500;line-height:22px}.k-ds{font-size:14px;line-height:18px;margin-top:2px}.k-card{max-width:420px;box-sizing:border-box;margin:.5rem 0}@media (min-width:520px){.k-card{zoom:.84;max-width:504px}}.k-sv{font-size:12px;line-height:1;height:30px;min-width:32px;box-sizing:border-box;padding:0 8px;border-radius:2px;cursor:pointer;flex:none}';
@@ -145,7 +145,17 @@
         if (!r.options) { send('Открой карточку: ' + r.title); return; }
         if (box.innerHTML) { box.innerHTML = ''; b.style.display = 'flex'; return; }
         b.style.display = 'none';
-        window.K(Object.assign({}, r, { title: r.title.toUpperCase() }), box.id);
+        var inner = box.id + '-c';
+        box.innerHTML = '<div style="display:flex;justify-content:flex-end"><button class="k-sv k-fold" style="background:transparent;border:' + t.svBd + ';color:' + t.sv + ';margin-top:4px">▴ свернуть</button></div><div id="' + inner + '"></div>';
+        window.K(Object.assign({}, r, { title: r.title.toUpperCase() }), inner);
+        function fold(mark) {
+          box.innerHTML = ''; b.style.display = 'flex';
+          if (mark) { b.style.opacity = '0.6'; b.querySelector('span span').textContent = '✓ ' + mark; }
+        }
+        box.querySelector('.k-fold').addEventListener('click', function () { fold(''); });
+        box.querySelectorAll('.k-bt').forEach(function (x) {
+          x.addEventListener('click', function () { var l = x.querySelector('.k-lb'); setTimeout(function () { fold(r.title + ' — ' + (l ? l.textContent : 'ответ')); }, 0); });
+        });
       });
     });
     var wt = root.querySelector('.k-wt'), wl = root.querySelector('.k-wl');
