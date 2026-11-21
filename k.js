@@ -1,4 +1,4 @@
-/* Карточки решений. Только дизайн, без данных. v1.8 · 21.11.2026 (срочность — эмодзи по краям заголовка: level '🚨' | '🔥' | '❓'; плашки срочности нет) (лампочка жёлтая, у самого значка 💡 чёрная обводка) (nowStyle по умолчанию fill; служебный ряд за лампочкой 💡) (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
+/* Карточки решений. Только дизайн, без данных. v1.9 · 21.11.2026 (K.digest — сводка: main + next + wait + done; срочность — эмодзи по краям заголовка: level '🚨' | '🔥' | '❓'; плашки срочности нет) (лампочка жёлтая, у самого значка 💡 чёрная обводка) (nowStyle по умолчанию fill; служебный ряд за лампочкой 💡) (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
    По умолчанию всегда светлая. mode:'dark' — тёмная, mode:'auto' — по экрану. */
 (function () {
   var CSS = '.k-pl{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:1;padding:4px 8px;border-radius:2px;letter-spacing:.03em}.k-bt{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;padding:8px 14px;border-radius:3px;height:auto;cursor:pointer}.k-em{width:24px;flex:none;font-size:18px;line-height:22px;text-align:center}.k-lb{font-size:17px;font-weight:500;line-height:22px}.k-ds{font-size:14px;line-height:18px;margin-top:2px}.k-card{max-width:420px;box-sizing:border-box;margin:.5rem 0}@media (min-width:520px){.k-card{zoom:.84;max-width:504px}}.k-sv{font-size:12px;padding:5px 8px;border-radius:2px;height:auto;cursor:pointer}';
@@ -106,6 +106,40 @@
       var v = cm.value.trim();
       if (!v) { er.textContent = 'Сначала напиши пару слов'; return; }
       send(C.title + ' — мой ответ: ' + v);
+    });
+  };
+
+  window.K.digest = function (D, rootId) {
+    var root = document.getElementById(rootId || 'k-root');
+    var dark = D.mode === 'dark' || (D.mode === 'auto' && isDark());
+    var t = theme(dark);
+    function tag(k) { var g = TAGS[k] || TAGS.routine; return '<span class="k-pl" style="background:linear-gradient(90deg,' + g[2] + ',' + g[3] + ');color:' + g[4] + '">' + g[0] + ' ' + g[1] + '</span>'; }
+    function row(r, i) {
+      var fl = r.level ? r.level.trim().split(' ')[0] + ' ' : '';
+      return '<button class="k-row" data-r="' + i + '" style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;text-align:left;background:' + t.bBg + ';border:' + t.bBd + ';border-radius:3px;padding:8px 12px;height:auto;cursor:pointer">' +
+        '<span style="display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%"><span style="font-size:15px;font-weight:500;line-height:20px;color:' + t.bTx + '">' + fl + r.title + '</span><span style="font-size:13px;color:' + t.bDs + ';flex:none">открыть ▸</span></span>' +
+        '<span style="display:flex;gap:6px;flex-wrap:wrap">' + tag(r.tag) + (r.deadline ? '<span class="k-pl" style="background:#FAC775;color:#412402">⏰ ' + r.deadline + '</span>' : '') + '</span></button>';
+    }
+    function wrow(w) {
+      return '<div style="display:flex;flex-direction:column;gap:4px;padding:6px 0;border-top:0.5px solid ' + t.bDs + '"><span style="font-size:14px;line-height:18px;color:' + t.bTx + '">' + w.title + '</span><span style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">' + tag(w.tag) + '<span style="font-size:12px;color:' + t.bDs + '">мяч: ' + w.who + (w.until ? ' · до ' + w.until : '') + '</span></span></div>';
+    }
+    var next = D.next || [], wait = D.wait || [], done = D.done || [];
+    root.innerHTML = '<div style="max-width:420px;box-sizing:border-box" class="k-dg">' +
+      (D.head ? '<div style="font-size:13px;font-weight:500;letter-spacing:.03em;color:' + t.bDs + ';margin:.5rem 0 0">' + D.head + '</div>' : '') +
+      '<div id="' + (rootId || 'k-root') + '-main"></div>' +
+      (next.length ? '<div style="font-size:12px;font-weight:500;letter-spacing:.03em;color:' + t.bDs + ';margin:4px 0 6px">ДАЛЬШЕ ПО ОЧЕРЕДИ</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">' + next.map(row).join('') + '</div>' : '') +
+      (wait.length ? '<button class="k-wt k-sv" style="background:transparent;border:' + t.svBd + ';color:' + t.sv + ';margin-bottom:6px">⏳ ЖДЁМ ДРУГИХ · ' + wait.length + ' ▾</button><div class="k-wl" style="display:none;margin-bottom:10px">' + wait.map(wrow).join('') + '</div>' : '') +
+      (done.length ? '<div style="font-size:13px;line-height:18px;color:' + t.bDs + ';margin-top:4px">💚 Закрыто: ' + done.join(' · ') + '</div>' : '') +
+      '</div>';
+    if (D.main) window.K(D.main, (rootId || 'k-root') + '-main');
+    root.querySelectorAll('.k-row').forEach(function (b) {
+      b.addEventListener('click', function () { send('Открой карточку: ' + next[+b.dataset.r].title); });
+    });
+    var wt = root.querySelector('.k-wt'), wl = root.querySelector('.k-wl');
+    if (wt) wt.addEventListener('click', function () {
+      var open = wl.style.display === 'block';
+      wl.style.display = open ? 'none' : 'block';
+      wt.textContent = '⏳ ЖДЁМ ДРУГИХ · ' + wait.length + (open ? ' ▾' : ' ▴');
     });
   };
 })();
