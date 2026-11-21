@@ -1,4 +1,4 @@
-/* Карточки решений. Только дизайн, без данных. v1.6 · 21.11.2026 (лампочка жёлтая) (nowStyle по умолчанию fill; служебный ряд за лампочкой 💡) (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
+/* Карточки решений. Только дизайн, без данных. v1.6 · 21.11.2026 (лампочка жёлтая, у самого значка 💡 чёрная обводка) (nowStyle по умолчанию fill; служебный ряд за лампочкой 💡) (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
    По умолчанию всегда светлая. mode:'dark' — тёмная, mode:'auto' — по экрану. */
 (function () {
   var CSS = '.k-pl{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:1;padding:4px 8px;border-radius:2px;letter-spacing:.03em}.k-bt{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;padding:8px 14px;border-radius:3px;height:auto;cursor:pointer}.k-em{width:24px;flex:none;font-size:18px;line-height:22px;text-align:center}.k-lb{font-size:17px;font-weight:500;line-height:22px}.k-ds{font-size:14px;line-height:18px;margin-top:2px}.k-card{max-width:420px;box-sizing:border-box;margin:.5rem 0}@media (min-width:520px){.k-card{zoom:.84;max-width:504px}}.k-sv{font-size:12px;padding:5px 8px;border-radius:2px;height:auto;cursor:pointer}';
@@ -79,7 +79,7 @@
       '<div style="font-size:22px;font-weight:500;line-height:1.15;color:' + t.title + ';text-wrap:balance;margin-bottom:10px">' + C.title + '</div>' +
       '<div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-bottom:12px">' + deadline + ifnot + '</div>' +
       '<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">' + nowBar + (C.options || []).map(opt).join('') + '</div>' +
-      '<div style="display:flex;gap:6px;margin-bottom:4px"><input class="k-cm" placeholder="✍️ Ничего не подходит — напишу сама" style="flex:1;min-width:0;font-size:14px"><button class="k-cs k-sv" style="background:transparent;border:' + t.svBd + ';color:' + t.sv + '">→</button><button class="k-lamp k-sv" aria-label="Показать служебные кнопки" style="background:#FAC775;border:1.5px solid #111111;box-shadow:inset 0 0 0 0.5px #111111;color:#412402">💡</button></div>' +
+      '<div style="display:flex;gap:6px;margin-bottom:4px"><input class="k-cm" placeholder="✍️ Ничего не подходит — напишу сама" style="flex:1;min-width:0;font-size:14px"><button class="k-cs k-sv" style="background:transparent;border:' + t.svBd + ';color:' + t.sv + '">→</button><button class="k-lamp k-sv" aria-label="Показать служебные кнопки" style="background:#FAC775;border:1px solid #111111;color:#412402"><span class="k-bulb" style="display:inline-block;filter:drop-shadow(0.7px 0 0 #111) drop-shadow(-0.7px 0 0 #111) drop-shadow(0 0.7px 0 #111) drop-shadow(0 -0.7px 0 #111)">💡</span></button></div>' +
       '<div class="k-er" style="font-size:13px;color:var(--text-danger);min-height:4px;margin-bottom:6px"></div>' +
       '<div class="k-svc" style="display:none;flex-wrap:wrap;gap:6px;margin-bottom:10px">' + svc + '</div>' +
       goal + where + '</div>';
@@ -94,7 +94,7 @@
     lamp.addEventListener('click', function () {
       var open = row.style.display === 'flex';
       row.style.display = open ? 'none' : 'flex';
-      lamp.textContent = open ? '💡' : '✕';
+      lamp.querySelector('.k-bulb').textContent = open ? '💡' : '✕';
     });
     var nb = root.querySelector('.k-now');
     if (nb) nb.addEventListener('click', function () { send('⚡ Делаю сейчас: ' + C.title); });
