@@ -1,4 +1,4 @@
-/* Карточки решений. Только дизайн, без данных. v1.6 · 21.11.2026 (лампочка жёлтая, у самого значка 💡 чёрная обводка) (nowStyle по умолчанию fill; служебный ряд за лампочкой 💡) (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
+/* Карточки решений. Только дизайн, без данных. v1.7 · 21.11.2026 (плашка срочности только если задан level: 🚨/🔥/❓) (лампочка жёлтая, у самого значка 💡 чёрная обводка) (nowStyle по умолчанию fill; служебный ряд за лампочкой 💡) (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
    По умолчанию всегда светлая. mode:'dark' — тёмная, mode:'auto' — по экрану. */
 (function () {
   var CSS = '.k-pl{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:1;padding:4px 8px;border-radius:2px;letter-spacing:.03em}.k-bt{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;padding:8px 14px;border-radius:3px;height:auto;cursor:pointer}.k-em{width:24px;flex:none;font-size:18px;line-height:22px;text-align:center}.k-lb{font-size:17px;font-weight:500;line-height:22px}.k-ds{font-size:14px;line-height:18px;margin-top:2px}.k-card{max-width:420px;box-sizing:border-box;margin:.5rem 0}@media (min-width:520px){.k-card{zoom:.84;max-width:504px}}.k-sv{font-size:12px;padding:5px 8px;border-radius:2px;height:auto;cursor:pointer}';
@@ -48,7 +48,7 @@
     var root = document.getElementById(rootId || 'k-root');
     var t = theme(C.mode === 'dark' || (C.mode === 'auto' && isDark()));
     var g = TAGS[C.tag] || TAGS.routine;
-    var level = C.level || '⚠️ РЕШАЕШЬ ТЫ';
+    var level = C.level || '';
     var levelBg = level.indexOf('❓') === 0 ? (t.title === '#FFFFFF' ? '#444441' : '#5F5E5A') : t.warn;
     var ns = C.nowStyle || 'fill';
     var nowCss = ns === 'fill' ? ['#E24B4A', '2px solid #111111', '#FFFFFF', '#FCEBEB'] : ns === 'outline' ? [t.bBg, '2px solid #E24B4A', '#A32D2D', '#791F1F'] : ['#FAC775', '2px solid #111111', '#412402', '#633806'];
@@ -75,7 +75,7 @@
 
     root.innerHTML =
       '<div class="k-card" style="background:' + t.card + ';border:' + t.bd + ';border-radius:4px;padding:12px 16px">' +
-      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="k-pl" style="' + levelCss + '">' + level + '</span><span class="k-pl" style="background:linear-gradient(90deg,' + g[2] + ',' + g[3] + ');color:' + g[4] + '">' + g[0] + ' ' + g[1] + '</span></div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">' + (level ? '<span class="k-pl" style="' + levelCss + '">' + level + '</span>' : '') + '<span class="k-pl" style="background:linear-gradient(90deg,' + g[2] + ',' + g[3] + ');color:' + g[4] + '">' + g[0] + ' ' + g[1] + '</span></div>' +
       '<div style="font-size:22px;font-weight:500;line-height:1.15;color:' + t.title + ';text-wrap:balance;margin-bottom:10px">' + C.title + '</div>' +
       '<div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-bottom:12px">' + deadline + ifnot + '</div>' +
       '<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">' + nowBar + (C.options || []).map(opt).join('') + '</div>' +
