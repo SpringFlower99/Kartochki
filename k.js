@@ -1,7 +1,7 @@
-/* Карточки решений. Только дизайн, без данных. v1.9 · 21.11.2026 (K.digest — сводка: main + next + wait + done; срочность — эмодзи по краям заголовка: level '🚨' | '🔥' | '❓'; плашки срочности нет) (лампочка жёлтая, у самого значка 💡 чёрная обводка) (nowStyle по умолчанию fill; служебный ряд за лампочкой 💡) (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
+/* Карточки решений. Только дизайн, без данных. v2.0 · 21.11.2026 (ссылка под «📁 ТУТ», «Если нет» 12px, кнопки одной высоты) (K.digest — сводка: main + next + wait + done; срочность — эмодзи по краям заголовка: level '🚨' | '🔥' | '❓'; плашки срочности нет) (лампочка жёлтая, у самого значка 💡 чёрная обводка) (nowStyle по умолчанию fill; служебный ряд за лампочкой 💡) (now:true — первая кнопка «СЕЙЧАС», nowDesc — её подпись; level с ❓ — серый)
    По умолчанию всегда светлая. mode:'dark' — тёмная, mode:'auto' — по экрану. */
 (function () {
-  var CSS = '.k-pl{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:1;padding:4px 8px;border-radius:2px;letter-spacing:.03em}.k-bt{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;padding:8px 14px;border-radius:3px;height:auto;cursor:pointer}.k-em{width:24px;flex:none;font-size:18px;line-height:22px;text-align:center}.k-lb{font-size:17px;font-weight:500;line-height:22px}.k-ds{font-size:14px;line-height:18px;margin-top:2px}.k-card{max-width:420px;box-sizing:border-box;margin:.5rem 0}@media (min-width:520px){.k-card{zoom:.84;max-width:504px}}.k-sv{font-size:12px;padding:5px 8px;border-radius:2px;height:auto;cursor:pointer}';
+  var CSS = '.k-pl{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:1;padding:4px 8px;border-radius:2px;letter-spacing:.03em}.k-bt{display:flex;gap:8px;align-items:center;width:100%;min-height:56px;box-sizing:border-box;text-align:left;padding:8px 14px;border-radius:3px;height:auto;cursor:pointer}.k-em{width:24px;flex:none;font-size:18px;line-height:22px;text-align:center}.k-lb{font-size:17px;font-weight:500;line-height:22px}.k-ds{font-size:14px;line-height:18px;margin-top:2px}.k-card{max-width:420px;box-sizing:border-box;margin:.5rem 0}@media (min-width:520px){.k-card{zoom:.84;max-width:504px}}.k-sv{font-size:12px;line-height:1;height:30px;min-width:32px;box-sizing:border-box;padding:0 8px;border-radius:2px;cursor:pointer;flex:none}';
 
   var TAGS = {
     div: ['💃', 'DIV', '#0B9C9C', '#6FE3D9', '#FFF'],
@@ -66,11 +66,12 @@
     }
 
     var deadline = C.deadline ? '<span class="k-pl" style="background:#FAC775;color:#412402">⏰ СРОК: ' + C.deadline + '</span>' : '';
-    var ifnot = C.ifnot ? '<span class="k-pl" style="background:' + t.warn + ';color:#FFF;font-size:13.2px;line-height:1.25">Если нет: ' + C.ifnot + '</span>' : '';
+    var ifnot = C.ifnot ? '<span class="k-pl" style="background:' + t.warn + ';color:#FFF;line-height:1.25">Если нет: ' + C.ifnot + '</span>' : '';
     var goal = C.goal ? '<div style="background:' + t.goalBg + ';border-left:3px solid #0B9C9C;border-radius:0;padding:8px 10px;margin-bottom:10px"><div style="font-size:12px;font-weight:500;letter-spacing:.03em;color:#0B9C9C">🎯 ЧЕГО ДОБИВАЕТСЯ ЭТОТ ЧЕЛОВЕК?</div><div style="font-size:14px;line-height:18px;color:' + t.bTx + ';margin-top:2px">' + C.goal + '</div></div>' : '';
-    var where = !C.where ? '' : C.whereUrl
+    var whereBtn = C.where ? '<button class="k-where k-sv" style="background:#FAC775;border:1px solid #111111;color:#412402;font-weight:500">📁 ТУТ</button>' : '';
+    var wherePath = !C.where ? '' : '<div class="k-wp" style="display:none;margin-bottom:6px">' + (C.whereUrl
       ? '<a href="' + C.whereUrl + '" class="k-pl" style="background:#FAC775;color:#412402;font-weight:400;text-decoration:none">📁 ' + C.where + ' ↗</a>'
-      : '<span class="k-pl" style="background:#FAC775;color:#412402;font-weight:400">📁 ' + C.where + '</span>';
+      : '<span class="k-pl" style="background:#FAC775;color:#412402;font-weight:400">📁 ' + C.where + '</span>') + '</div>';
     var svc = SVC.map(function (s, i) {
       return '<button class="k-sv" data-s="' + i + '" style="background:transparent;border:' + t.svBd + ';color:' + t.sv + '">' + s[0] + ' ' + s[1] + '</button>';
     }).join('');
@@ -81,10 +82,11 @@
       '<div style="font-size:22px;font-weight:500;line-height:1.15;color:' + t.title + ';text-wrap:balance;margin-bottom:10px">' + title + '</div>' +
       '<div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-bottom:12px">' + deadline + ifnot + '</div>' +
       '<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">' + nowBar + (C.options || []).map(opt).join('') + '</div>' +
-      '<div style="display:flex;gap:6px;margin-bottom:4px"><input class="k-cm" placeholder="✍️ Ничего не подходит — напишу сама" style="flex:1;min-width:0;font-size:14px"><button class="k-cs k-sv" style="background:transparent;border:' + t.svBd + ';color:' + t.sv + '">→</button><button class="k-lamp k-sv" aria-label="Показать служебные кнопки" style="background:#FAC775;border:1px solid #111111;color:#412402"><span class="k-bulb" style="display:inline-block;filter:drop-shadow(0.7px 0 0 #111) drop-shadow(-0.7px 0 0 #111) drop-shadow(0 0.7px 0 #111) drop-shadow(0 -0.7px 0 #111)">💡</span></button></div>' +
+      '<div style="display:flex;gap:6px;margin-bottom:4px"><input class="k-cm" placeholder="✍️ Ничего не подходит — напишу сама" style="flex:1;min-width:0;font-size:14px"><button class="k-cs k-sv" style="background:transparent;border:' + t.svBd + ';color:' + t.sv + '">→</button><button class="k-lamp k-sv" aria-label="Показать служебные кнопки" style="background:#FAC775;border:1px solid #111111;color:#412402"><span class="k-bulb" style="display:inline-block;filter:drop-shadow(0.7px 0 0 #111) drop-shadow(-0.7px 0 0 #111) drop-shadow(0 0.7px 0 #111) drop-shadow(0 -0.7px 0 #111)">💡</span></button>' + whereBtn + '</div>' +
+      wherePath +
       '<div class="k-er" style="font-size:13px;color:var(--text-danger);min-height:4px;margin-bottom:6px"></div>' +
       '<div class="k-svc" style="display:none;flex-wrap:wrap;gap:6px;margin-bottom:10px">' + svc + '</div>' +
-      goal + where + '</div>';
+      goal + '</div>';
 
     root.querySelectorAll('.k-bt:not(.k-now)').forEach(function (b) {
       b.addEventListener('click', function () { send(C.options[+b.dataset.i].send); });
@@ -98,6 +100,8 @@
       row.style.display = open ? 'none' : 'flex';
       lamp.querySelector('.k-bulb').textContent = open ? '💡' : '✕';
     });
+    var wb = root.querySelector('.k-where'), wp = root.querySelector('.k-wp');
+    if (wb) wb.addEventListener('click', function () { wp.style.display = wp.style.display === 'block' ? 'none' : 'block'; });
     var nb = root.querySelector('.k-now');
     if (nb) nb.addEventListener('click', function () { send('⚡ Делаю сейчас: ' + C.title); });
     var cm = root.querySelector('.k-cm'), er = root.querySelector('.k-er');
@@ -117,7 +121,7 @@
     function row(r, i) {
       var fl = r.level ? r.level.trim().split(' ')[0] + ' ' : '';
       return '<button class="k-row" data-r="' + i + '" style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;text-align:left;background:' + t.bBg + ';border:' + t.bBd + ';border-radius:3px;padding:8px 12px;height:auto;cursor:pointer">' +
-        '<span style="display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%"><span style="font-size:15px;font-weight:500;line-height:20px;color:' + t.bTx + '">' + fl + r.title + '</span><span style="font-size:13px;color:' + t.bDs + ';flex:none">открыть ▸</span></span>' +
+        '<span style="display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%"><span style="font-size:17px;font-weight:500;line-height:22px;color:' + t.bTx + '">' + fl + r.title + '</span><span style="font-size:13px;color:' + t.bDs + ';flex:none">открыть ▸</span></span>' +
         '<span style="display:flex;gap:6px;flex-wrap:wrap">' + tag(r.tag) + (r.deadline ? '<span class="k-pl" style="background:#FAC775;color:#412402">⏰ ' + r.deadline + '</span>' : '') + '</span></button>';
     }
     function wrow(w) {
